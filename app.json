@@ -7,7 +7,11 @@
     "web": {
       "output": "server"
     },
+    "ios": {
+      "bundleIdentifier": "com.dannymanning.fireandfloe"
+    },
     "android": {
+      "package": "com.dannymanning.fireandfloe",
       "predictiveBackGestureEnabled": false
     },
     "experiments": {
@@ -30,7 +34,9 @@
             "targetSdkVersion": 35
           }
         }
-      ]
+      ],
+      "expo-splash-screen",
+      "expo-status-bar"
     ],
     "name": "Fire & Floe",
     "owner": "dannymanning",

@@ -3,6 +3,8 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs as WebTabs } from "expo-router/tabs";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 
+const TINT = "#C45C26";
+
 export default function Layout() {
   return (
     <ThemeProvider>
@@ -10,7 +12,9 @@ export default function Layout() {
         <WebTabs
           screenOptions={{
             headerShown: false,
-            tabBarActiveTintColor: "#C45C26",
+            tabBarActiveTintColor: TINT,
+            tabBarStyle: { backgroundColor: "#1A1A1A", borderTopColor: "#2A2A2A" },
+            tabBarInactiveTintColor: "#B8AFA6",
           }}
         >
           <WebTabs.Screen
@@ -24,23 +28,32 @@ export default function Layout() {
             name="(book)"
             options={{
               title: "Book",
+              tabBarIcon: (props) => <MaterialIcons {...props} name="event" />,
+            }}
+          />
+          <WebTabs.Screen
+            name="(merch)"
+            options={{
+              title: "Merch",
+              tabBarIcon: (props) => <MaterialIcons {...props} name="storefront" />,
+            }}
+          />
+          <WebTabs.Screen
+            name="(cart)"
+            options={{
+              title: "Cart",
               tabBarIcon: (props) => (
-                <MaterialIcons {...props} name="calendar-today" />
+                <MaterialIcons {...props} name="shopping-bag" />
               ),
             }}
           />
           <WebTabs.Screen
             name="(checkout)"
-            options={{
-              title: "Checkout",
-              tabBarIcon: (props) => (
-                <MaterialIcons {...props} name="shopping-cart" />
-              ),
-            }}
+            options={{ href: null }}
           />
         </WebTabs>
       ) : (
-        <NativeTabs>
+        <NativeTabs tintColor={TINT} minimizeBehavior="onScrollDown">
           <NativeTabs.Trigger name="(index)">
             <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
             <NativeTabs.Trigger.Icon
@@ -55,12 +68,22 @@ export default function Layout() {
               md="calendar_today"
             />
           </NativeTabs.Trigger>
-          <NativeTabs.Trigger name="(checkout)">
-            <NativeTabs.Trigger.Label>Checkout</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger name="(merch)">
+            <NativeTabs.Trigger.Label>Merch</NativeTabs.Trigger.Label>
             <NativeTabs.Trigger.Icon
-              sf={{ default: "cart", selected: "cart.fill" }}
-              md="shopping_cart"
+              sf={{ default: "tshirt", selected: "tshirt.fill" }}
+              md="storefront"
             />
+          </NativeTabs.Trigger>
+          <NativeTabs.Trigger name="(cart)">
+            <NativeTabs.Trigger.Label>Cart</NativeTabs.Trigger.Label>
+            <NativeTabs.Trigger.Icon
+              sf={{ default: "bag", selected: "bag.fill" }}
+              md="shopping_bag"
+            />
+          </NativeTabs.Trigger>
+          <NativeTabs.Trigger name="(checkout)" hidden>
+            <NativeTabs.Trigger.Label>Checkout</NativeTabs.Trigger.Label>
           </NativeTabs.Trigger>
         </NativeTabs>
       )}
