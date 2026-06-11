@@ -53,10 +53,11 @@ export default function ProductScreen() {
         </Text>
       </View>
 
-      {/* WebView */}
+      {/* WebView — bottom margin keeps the page's fixed-bottom elements
+          (cookie banner, add-to-cart bar) above the floating tab bar */}
       <WebView
         source={{ uri: url ?? "" }}
-        style={{ flex: 1, backgroundColor: BG }}
+        style={{ flex: 1, backgroundColor: BG, marginBottom: insets.bottom + 49 }}
       />
     </View>
   );
