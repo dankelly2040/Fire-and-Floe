@@ -32,6 +32,20 @@ export default function CheckoutScreen() {
   const [email, setEmail] = useState("");
   const [promoCode, setPromoCode] = useState("");
   const [confirmed, setConfirmed] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = () => {
+    if (!name.trim()) {
+      setError("Please enter your full name.");
+      return;
+    }
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    setError(null);
+    setConfirmed(true);
+  };
 
   const price = Number(params.price) || 0;
   const seats = Number(params.seats) || 1;
@@ -135,13 +149,13 @@ export default function CheckoutScreen() {
         />
       </View>
 
+      {error && <Text style={styles.errorText}>{error}</Text>}
       <Pressable
         style={[
           styles.payBtn,
           (!name || !email) && styles.payBtnDisabled,
         ]}
-        onPress={() => setConfirmed(true)}
-        disabled={!name || !email}
+        onPress={handleSubmit}
       >
         <Text style={styles.payBtnText}>Pay ${price.toFixed(2)}</Text>
       </Pressable>
@@ -211,6 +225,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   payBtnDisabled: { opacity: 0.5 },
+  errorText: {
+    color: "#E57373",
+    fontSize: 14,
+    textAlign: "center",
+    marginHorizontal: 20,
+    marginTop: 24,
+  },
   payBtnText: { color: "#fff", fontSize: 18, fontWeight: "600" },
   disclaimer: {
     color: TEXT_SECONDARY,

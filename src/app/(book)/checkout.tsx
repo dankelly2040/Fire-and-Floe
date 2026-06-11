@@ -26,6 +26,20 @@ export default function CheckoutScreen() {
   const [email, setEmail] = useState("");
   const [promoCode, setPromoCode] = useState("");
   const [confirmed, setConfirmed] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = () => {
+    if (!name.trim()) {
+      setError("Please enter your full name.");
+      return;
+    }
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    setError(null);
+    setConfirmed(true);
+  };
 
   const price = Number(params.price) || 0;
   const seats = Number(params.seats) || 1;
@@ -307,9 +321,19 @@ export default function CheckoutScreen() {
         </View>
 
         {/* Proceed to payment */}
+        {error && (
+          <Text
+            style={{
+              color: "#E57373",
+              fontSize: 14,
+              textAlign: "center",
+            }}
+          >
+            {error}
+          </Text>
+        )}
         <Pressable
-          onPress={() => setConfirmed(true)}
-          disabled={!name || !email}
+          onPress={handleSubmit}
           style={{
             backgroundColor: ACCENT,
             paddingVertical: 16,
