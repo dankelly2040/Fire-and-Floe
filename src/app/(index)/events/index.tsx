@@ -1,40 +1,15 @@
 import { Image } from "expo-image";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { EVENTS } from "@/data/events";
 
 const ACCENT = "#C45C26";
 const BG = "#1A1A1A";
 const CARD_BG = "#2A2A2A";
 const TEXT_PRIMARY = "#F5F0EB";
 const TEXT_SECONDARY = "#B8AFA6";
-
-const EVENTS = [
-  {
-    id: "oysters",
-    title: "Oysters & Chowder",
-    description:
-      "Sauna session paired with fresh oysters and chowder from the Salish Sea. A community gathering by the water.",
-    image: require("@/assets/event-oysters.jpg"),
-    date: "Check schedule",
-  },
-  {
-    id: "smores",
-    title: "Sauna & S'mores",
-    description:
-      "Wind down with a sauna session followed by handmade s'mores by the fire. Perfect for families and friends.",
-    image: require("@/assets/event-smores.jpeg"),
-    date: "Check schedule",
-  },
-  {
-    id: "moonlight",
-    title: "Moonlight Sauna",
-    description:
-      "Experience the sauna under the moon. A serene evening session with views of the night sky over Bainbridge Island.",
-    image: require("@/assets/event-moonlight.jpg"),
-    date: "Check schedule",
-  },
-];
 
 export default function EventsScreen() {
   const router = useRouter();
@@ -85,8 +60,8 @@ export default function EventsScreen() {
         {/* Event cards */}
         <View style={{ paddingHorizontal: 20, gap: 16 }}>
           {EVENTS.map((event) => (
+            <Link key={event.id} href={`/events/${event.id}`} asChild>
             <Pressable
-              key={event.id}
               style={{
                 borderRadius: 14,
                 borderCurve: "continuous",
@@ -128,6 +103,7 @@ export default function EventsScreen() {
                 </Text>
               </View>
             </Pressable>
+            </Link>
           ))}
         </View>
       </ScrollView>
