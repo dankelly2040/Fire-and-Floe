@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { WebView } from "react-native-webview";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -58,6 +58,23 @@ export default function ProductScreen() {
       <WebView
         source={{ uri: url ?? "" }}
         style={{ flex: 1, backgroundColor: BG, marginBottom: insets.bottom + 49 }}
+        startInLoadingState
+        renderLoading={() => (
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: BG,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ActivityIndicator size="large" color="#C45C26" />
+          </View>
+        )}
       />
     </View>
   );
