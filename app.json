@@ -8,7 +8,10 @@
       "output": "server"
     },
     "ios": {
-      "bundleIdentifier": "com.dannymanning.fireandfloe"
+      "bundleIdentifier": "com.dannymanning.fireandfloe",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "com.dannymanning.fireandfloe",
