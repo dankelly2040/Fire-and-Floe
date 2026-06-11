@@ -1,10 +1,10 @@
-import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const campSauna = require("@/assets/camp-sauna.png");
+const saunaInterior = require("@/assets/sauna-interior.webp");
 const privateSauna = require("@/assets/private-sauna.webp");
 
 const ACCENT = "#C45C26";
@@ -22,13 +22,13 @@ const SESSION_INFO = {
   community: {
     title: "Camp Sauna Sessions",
     description:
-      "Come with friends or meet new friends in the sauna! Either choose to use just the sauna or join in on contrast therapy, ebbing between the sauna and the cold waters of the Puget Sound.",
-    image: campSauna,
+      "Use the sauna or join in on contrast therapy, ebbing between the sauna and the cold waters of the Puget Sound.",
+    image: saunaInterior,
   },
   buyout: {
     title: "Private Sauna",
     description:
-      "Enjoy an exclusive 2.5-hour private sauna experience where you'll have time to relax, reset, and reconnect. Perfect for individuals, couples, or groups seeking a wellness escape.",
+      "Enjoy an exclusive 2.5-hour private sauna experience. Perfect for individuals, couples, or groups seeking a wellness escape.",
     image: privateSauna,
   },
 };
@@ -50,6 +50,8 @@ const DAY_LABELS = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
 export default function BookScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const { height } = useWindowDimensions();
   const today = new Date();
 
   const [sessionType, setSessionType] = useState<SessionType>("community");
@@ -107,39 +109,126 @@ export default function BookScreen() {
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: BG }}
-      contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ paddingBottom: 40 }}
+      contentContainerStyle={{ paddingBottom: 100 }}
     >
-      {/* Header image */}
-      <Image
-        source={info.image}
-        style={{ width: "100%", aspectRatio: 16 / 9 }}
-        contentFit="cover"
-      />
-
-      {/* Content */}
-      <View style={{ paddingHorizontal: 20, gap: 24, marginTop: 24 }}>
-        {/* Title + description */}
-        <View style={{ gap: 12 }}>
-          <Text style={{ fontSize: 26, fontWeight: "800", color: TEXT_PRIMARY }}>
+      {/* Header image - full bleed with gradient fade */}
+      <View style={{ height: height * 0.48 }}>
+        <Image
+          source={info.image}
+          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+          contentFit="cover"
+        />
+        {/* Gradient fade to background */}
+        <View
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: "60%",
+            experimental_backgroundImage: `linear-gradient(to bottom, transparent 0%, ${BG} 100%)`,
+          }}
+        />
+        {/* Title overlapping the fade */}
+        <View
+          style={{
+            position: "absolute",
+            bottom: 16,
+            left: 0,
+            right: 0,
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: "600",
+              color: TEXT_PRIMARY,
+              textAlign: "center",
+            }}
+          >
             {info.title}
           </Text>
-          <Text style={{ fontSize: 15, color: TEXT_SECONDARY, lineHeight: 22 }}>
+        </View>
+        {/* Back button */}
+        <Pressable
+          onPress={() => router.back()}
+          style={{
+            position: "absolute",
+            top: insets.top + 8,
+            left: 16,
+            width: 36,
+            height: 36,
+            borderRadius: 18,
+            backgroundColor: "rgba(255,255,255,0.2)",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ color: "#fff", fontSize: 18, fontWeight: "600" }}>
+            ‹
+          </Text>
+        </Pressable>
+      </View>
+
+      {/* Content */}
+      <View style={{ paddingHorizontal: 20, gap: 24, marginTop: 8 }}>
+        {/* Description (centered) */}
+        <View style={{ alignItems: "center" }}>
+          <Text
+            style={{
+              fontSize: 15,
+              color: TEXT_SECONDARY,
+              lineHeight: 22,
+              textAlign: "center",
+              paddingHorizontal: 10,
+            }}
+          >
             {info.description}
           </Text>
         </View>
 
-        {/* Session type toggle */}
-        <SegmentedControl
-          values={["Community", "Private"]}
-          selectedIndex={sessionType === "community" ? 0 : 1}
-          onChange={({ nativeEvent }) => {
-            setSessionType(nativeEvent.selectedSegmentIndex === 0 ? "community" : "buyout");
-            setSelectedTime(null);
-            setSeats(1);
+        {/* Session type toggle (single capsule) */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignSelf: "center",
+            borderRadius: 28,
+            backgroundColor: "#2A2A2A",
+            padding: 4,
           }}
-          appearance="dark"
-        />
+        >
+          {(["community", "buyout"] as const).map((type) => {
+            const active = sessionType === type;
+            const label = type === "community" ? "Community" : "Private";
+            return (
+              <Pressable
+                key={type}
+                onPress={() => {
+                  setSessionType(type);
+                  setSelectedTime(null);
+                  setSeats(1);
+                }}
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 30,
+                  borderRadius: 24,
+                  backgroundColor: active ? "#444" : "transparent",
+                }}
+              >
+                <Text
+                  style={{
+                    color: active ? TEXT_PRIMARY : TEXT_SECONDARY,
+                    fontSize: 15,
+                    fontWeight: "600",
+                  }}
+                >
+                  {label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
 
         {/* Calendar */}
         <View
@@ -159,17 +248,39 @@ export default function BookScreen() {
               alignItems: "center",
             }}
           >
-            <Text style={{ color: TEXT_PRIMARY, fontSize: 17, fontWeight: "700" }}>
-              {MONTH_NAMES[currentMonth]} {currentYear}
-            </Text>
-            <View style={{ flexDirection: "row", gap: 16 }}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text
+                style={{
+                  color: TEXT_PRIMARY,
+                  fontSize: 17,
+                  fontWeight: "600",
+                }}
+              >
+                {MONTH_NAMES[currentMonth]} {currentYear}
+              </Text>
+              <Text
+                style={{
+                  color: ACCENT,
+                  fontSize: 17,
+                  fontWeight: "600",
+                  marginLeft: 6,
+                }}
+              >
+                {">"}
+              </Text>
+            </View>
+            <View style={{ flexDirection: "row", gap: 20 }}>
               <Pressable onPress={prevMonth} hitSlop={12}>
-                <Text style={{ color: ACCENT, fontSize: 18, fontWeight: "700" }}>
+                <Text
+                  style={{ color: ACCENT, fontSize: 18, fontWeight: "600" }}
+                >
                   {"<"}
                 </Text>
               </Pressable>
               <Pressable onPress={nextMonth} hitSlop={12}>
-                <Text style={{ color: ACCENT, fontSize: 18, fontWeight: "700" }}>
+                <Text
+                  style={{ color: ACCENT, fontSize: 18, fontWeight: "600" }}
+                >
                   {">"}
                 </Text>
               </Pressable>
@@ -255,7 +366,9 @@ export default function BookScreen() {
         {/* Time selection */}
         {selectedDay !== null && (
           <View style={{ gap: 12 }}>
-            <Text style={{ color: TEXT_PRIMARY, fontSize: 16, fontWeight: "700" }}>
+            <Text
+              style={{ color: TEXT_PRIMARY, fontSize: 16, fontWeight: "600" }}
+            >
               Select a time
             </Text>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
@@ -294,10 +407,14 @@ export default function BookScreen() {
         {/* Seat stepper */}
         {sessionType === "community" && selectedTime !== null && (
           <View style={{ gap: 12 }}>
-            <Text style={{ color: TEXT_PRIMARY, fontSize: 16, fontWeight: "700" }}>
+            <Text
+              style={{ color: TEXT_PRIMARY, fontSize: 16, fontWeight: "600" }}
+            >
               Number of seats
             </Text>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 20 }}
+            >
               <Pressable
                 onPress={() => setSeats(Math.max(1, seats - 1))}
                 style={{
@@ -311,7 +428,13 @@ export default function BookScreen() {
                   borderColor: "#3A3A3A",
                 }}
               >
-                <Text style={{ color: TEXT_PRIMARY, fontSize: 22, fontWeight: "600" }}>
+                <Text
+                  style={{
+                    color: TEXT_PRIMARY,
+                    fontSize: 22,
+                    fontWeight: "600",
+                  }}
+                >
                   -
                 </Text>
               </Pressable>
@@ -319,7 +442,7 @@ export default function BookScreen() {
                 style={{
                   color: TEXT_PRIMARY,
                   fontSize: 24,
-                  fontWeight: "800",
+                  fontWeight: "600",
                   fontVariant: ["tabular-nums"],
                   minWidth: 30,
                   textAlign: "center",
@@ -340,7 +463,13 @@ export default function BookScreen() {
                   borderColor: "#3A3A3A",
                 }}
               >
-                <Text style={{ color: TEXT_PRIMARY, fontSize: 22, fontWeight: "600" }}>
+                <Text
+                  style={{
+                    color: TEXT_PRIMARY,
+                    fontSize: 22,
+                    fontWeight: "600",
+                  }}
+                >
                   +
                 </Text>
               </Pressable>
@@ -365,12 +494,24 @@ export default function BookScreen() {
             }}
           >
             <View>
-              <Text style={{ color: TEXT_PRIMARY, fontSize: 16, fontWeight: "700" }}>
+              <Text
+                style={{
+                  color: TEXT_PRIMARY,
+                  fontSize: 16,
+                  fontWeight: "600",
+                }}
+              >
                 {sessionType === "community"
                   ? `${seats} Seat${seats > 1 ? "s" : ""}`
                   : "Private Buyout"}
               </Text>
-              <Text style={{ color: TEXT_SECONDARY, fontSize: 13, marginTop: 4 }}>
+              <Text
+                style={{
+                  color: TEXT_SECONDARY,
+                  fontSize: 13,
+                  marginTop: 4,
+                }}
+              >
                 {selectedTime}, {MONTH_NAMES[currentMonth]} {selectedDay},{" "}
                 {currentYear}
               </Text>
@@ -396,7 +537,9 @@ export default function BookScreen() {
                 borderCurve: "continuous",
               }}
             >
-              <Text style={{ color: "#fff", fontWeight: "800", fontSize: 16 }}>
+              <Text
+                style={{ color: "#fff", fontWeight: "600", fontSize: 16 }}
+              >
                 Book ${price.toFixed(2)}
               </Text>
             </Pressable>

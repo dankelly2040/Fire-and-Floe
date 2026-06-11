@@ -7,7 +7,6 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
-    "@react-native-segmented-control/segmented-control": "2.5.7",
     "expo": "^56.0.9",
     "expo-build-properties": "~56.0.17",
     "expo-constants": "~56.0.17",
@@ -30,6 +29,7 @@
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "4.25.2",
     "react-native-web": "~0.21.2",
+    "react-native-webview": "13.16.1",
     "react-native-worklets": "0.8.3"
   },
   "devDependencies": {

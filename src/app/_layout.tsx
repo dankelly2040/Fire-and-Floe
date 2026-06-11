@@ -34,7 +34,7 @@ export default function Layout() {
           <WebTabs.Screen
             name="(merch)"
             options={{
-              title: "Merch",
+              title: "Shop",
               tabBarIcon: (props) => <MaterialIcons {...props} name="storefront" />,
             }}
           />
@@ -69,7 +69,7 @@ export default function Layout() {
             />
           </NativeTabs.Trigger>
           <NativeTabs.Trigger name="(merch)">
-            <NativeTabs.Trigger.Label>Merch</NativeTabs.Trigger.Label>
+            <NativeTabs.Trigger.Label>Shop</NativeTabs.Trigger.Label>
             <NativeTabs.Trigger.Icon
               sf={{ default: "tshirt", selected: "tshirt.fill" }}
               md="storefront"
