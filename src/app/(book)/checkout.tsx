@@ -116,6 +116,8 @@ export default function CheckoutScreen() {
     <ScrollView
       style={{ flex: 1, backgroundColor: BG }}
       contentInsetAdjustmentBehavior="automatic"
+      automaticallyAdjustKeyboardInsets
+      keyboardShouldPersistTaps="handled"
       contentContainerStyle={{ paddingBottom: 40 }}
     >
       {/* Header bar */}

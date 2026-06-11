@@ -77,6 +77,8 @@ export default function CheckoutScreen() {
   return (
     <ScrollView
       style={[styles.container, { paddingTop: insets.top }]}
+      automaticallyAdjustKeyboardInsets
+      keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.content}
     >
       <Text style={styles.title}>Checkout</Text>
